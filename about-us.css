@@ -1,0 +1,190 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.title {
+    padding-top: 40px;
+    text-align: center;
+    font-size: 36px;
+    font-size: 36px;
+    margin-bottom: 50px;
+    color: #ffffff;
+
+
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 700;
+
+    line-height: 49px;
+    text-align: center;
+}
+
+.cards-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    align-items: start;
+}
+
+/* Левая колонка с карточками */
+.cards-left {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    border: 1px solid #2a2a2a;
+    border-radius: 20px;
+    padding: 28px 32px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    position: relative;
+}
+
+.card:hover {
+    border-color: #8a2be2;
+    transform: translateY(-2px);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.card-main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.card-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.card-icon svg {
+    width: 48px;
+    height: 48px;
+    color: #d4b3ff;
+}
+
+.card-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-number {
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+}
+
+.card-label {
+    font-size: 16px;
+    color: #aaa;
+    margin-top: 6px;
+    letter-spacing: 2px;
+}
+
+/* Тэги-бейджи внутри раскрытой карточки */
+.card-tags {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.card.active .card-tags {
+    max-height: 50px;
+    opacity: 1;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.tag-purple {
+    background: linear-gradient(135deg, #8a2be2, #6a0dad);
+}
+
+.tag-dark {
+    background: #1f1f1f;
+    border: 1px solid #333;
+}
+
+/* Раскрывающееся описание */
+.card-description {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #bbb;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.card.active .card-description {
+    max-height: 300px;
+    opacity: 1;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #2a2a2a;
+}
+
+.card.active {
+    border-color: #8a2be2;
+}
+
+/* Правая колонка - описание */
+.info-panel {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    border: 1px solid #2a2a2a;
+    border-radius: 20px;
+    padding: 32px;
+    min-height: 200px;
+    color: #ccc;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* Футер */
+.footer {
+    margin-top: 25px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    padding: 20px 28px;
+    color: #aaa;
+    font-size: 14px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .cards-wrapper {
+        grid-template-columns: 1fr;
+    }
+    .card-number {
+        font-size: 28px;
+    }
+}

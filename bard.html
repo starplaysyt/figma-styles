@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Меню навигации</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1a1a1a;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #0a0a0a;
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 5px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            color: #888;
+            background: transparent;
+            border: none;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            overflow: hidden;
+            white-space: nowrap;
+            min-width: 52px;
+            height: 52px;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item .label {
+            font-size: 16px;
+            font-weight: 600;
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .nav-item:hover {
+            color: #fff;
+            background: rgba(138, 43, 226, 0.15);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #8a2be2, #6a0dad);
+            color: #fff;
+            padding: 14px 24px;
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.5);
+        }
+
+        .nav-item.active .label {
+            max-width: 200px;
+            opacity: 1;
+            margin-left: 4px;
+        }
+
+        .nav-item.active svg {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+
+<nav class="horizontal">
+    <button class="horizontal" data-name="Главная">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3l-9 8h2v9h5v-6h4v6h5v-9h2z"/>
+        </svg>
+        <span class="label">Главная</span>
+    </button>
+
+    <button class="nav-item" data-name="Пауза">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="5" width="4" height="14" rx="1"/>
+            <rect x="14" y="5" width="4" height="14" rx="1"/>
+        </svg>
+        <span class="label">Пауза</span>
+    </button>
+
+    <button class="nav-item" data-name="Касса">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 6h-3V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM9 4h6v2H9V4zm3 13a3 3 0 110-6 3 3 0 010 6z"/>
+        </svg>
+        <span class="label">Касса</span>
+    </button>
+
+    <button class="nav-item" data-name="Профиль">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 5a2 2 0 110 4 2 2 0 010-4zm-4 7a2 2 0 110 4 2 2 0 010-4zm8 0a2 2 0 110 4 2 2 0 010-4z"/>
+        </svg>
+        <span class="label">Профиль</span>
+    </button>
+</nav>
+
+</body>
+</html>

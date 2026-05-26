@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="layout.css">
+    <link rel="stylesheet" href="main-page.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="bg-black">
+<header class="vertical gap-3">
+    <nav class="horizontal align-center fl-wrap" style="height: 75px; padding: 19px 84px; justify-content: space-between;" >
+        <div class="glass-box horizontal horizontal-hug-h align-center gap-1" style="padding: 5px 20px">
+            <img src="src/logo.svg" alt="asdasd">
+            <label class="font-black-16">Логист Форт</label>
+        </div>
+
+        <nav class="horizontal glass-box align-center">
+            <button class="nav-item active" data-name="Главная">
+                <img src="src/solar_home-2-bold.svg" alt="asdasd" width="24" height="24">
+                <label class="label font-bold-14">Главная</label>
+            </button>
+
+            <button class="nav-item" data-name="Пауза">
+                <img src="src/solar_home-2-bold.svg" alt="asdasd" style="">
+                <label class="label font-bold-14">О нас</label>
+            </button>
+
+            <button class="nav-item" data-name="Касса">
+                <img src="src/solar_home-2-bold.svg" alt="asdasd" style="">
+                <label class="label font-bold-14">Цена</label>
+            </button>
+
+            <button class="nav-item" data-name="Профиль">
+                <img src="src/solar_home-2-bold.svg" alt="asdasd" style="">
+                <label class="label font-bold-14">Отзывы</label>
+            </button>
+        </nav>
+
+        <div class="horizontal align-center gap-1">
+            <button class="button login-button">
+                <label class="font-bold-14">Войти</label>
+            </button>
+            <div class="button send-button">
+                <label class="font-bold-14">Подать заявку</label>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="content fl-wrap">
+    <div class="vertical gap-2">
+        <div class="card-content glass-box">
+            <span class="text-content">Доставки по Беларуси и России</span>
+            <span class="text-content-2">Доставка и маркировка товаров в одном месте</span>
+        </div>
+
+        <button class="order-now button">
+            <label class="font-bold-20">
+                Заказать сейчас
+            </label>
+        </button>
+    </div>
+
+    <div class="image-container">
+        <img class="card-1" src="src/images/image%202.png">
+        <div class="image-container-2">
+            <img class="card-2" src="src/images/image%203.png">
+            <img class="card-3" src="src/images/image%204.png">
+        </div>
+
+    </div>
+</section>
+
+<div class="badges">
+    <div class="badge">
+        <div class="badge-icon icon-pink">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
+            </svg>
+        </div>
+        <span class="font-bold-14">Современные технологии</span>
+    </div>
+
+    <div class="badge">
+        <div class="badge-icon icon-cyan">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3h-1V1h-2v2H8V1H6v2H5a2 2 0 00-2 2v16a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm0 18H5V8h14v13z"/>
+                <path d="M7 10h5v5H7z"/>
+            </svg>
+        </div>
+        <span class="font-bold-14">Быстрое прохождение границы</span>
+    </div>
+
+    <div class="badge">
+        <div class="badge-icon icon-blue">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="5.5" cy="17.5" r="3.5"/>
+                <circle cx="18.5" cy="17.5" r="3.5"/>
+                <circle cx="12" cy="5" r="2"/>
+                <path d="M12 8l-2 4h4l2 3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <span class="font-bold-14">Скорость обработки данных</span>
+    </div>
+</div>
+
+
+</body>
+
+<script>
+    const items = document.querySelectorAll('.nav-item');
+
+    items.forEach(item => {
+        item.addEventListener('click', () => {
+            items.forEach(el => el.classList.remove('active'));
+            item.classList.add('active');
+        });
+    });
+</script>
+
+</html>
