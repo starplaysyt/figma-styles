@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Скролл-меню</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+            padding-bottom: 120px; /* место под фиксированное меню */
+        }
+
+        /* === СЕКЦИИ === */
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .section p {
+            font-size: 18px;
+            color: #aaa;
+            max-width: 600px;
+        }
+
+        #home    { background: linear-gradient(135deg, #2a0a3e, #1a1a1a); }
+        #pause   { background: linear-gradient(135deg, #0a2a3e, #1a1a1a); }
+        #cashbox { background: linear-gradient(135deg, #3e0a2a, #1a1a1a); }
+        #profile { background: linear-gradient(135deg, #0a3e1a, #1a1a1a); }
+
+        /* === МЕНЮ === */
+        .nav-menu {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 50px;
+            cursor: pointer;
+            color: #888;
+            background: transparent;
+            border: none;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            overflow: hidden;
+            white-space: nowrap;
+            min-width: 52px;
+            height: 52px;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item .label {
+            font-size: 16px;
+            font-weight: 600;
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .nav-item:hover {
+            color: #fff;
+            background: rgba(138, 43, 226, 0.15);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #8a2be2, #6a0dad);
+            color: #fff;
+            padding: 14px 24px;
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.5);
+        }
+
+        .nav-item.active .label {
+            max-width: 200px;
+            opacity: 1;
+            margin-left: 4px;
+        }
+
+        .nav-item.active svg {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+
+<!-- СЕКЦИИ КОНТЕНТА -->
+<section id="home" class="section">
+    <h2>🏠 Главная</h2>
+    <p>Добро пожаловать на главную страницу. Прокрутите ниже, чтобы увидеть, как меню само переключается.</p>
+</section>
+
+<section id="pause" class="section">
+    <h2>⏸ Пауза</h2>
+    <p>Это вторая секция. Обратите внимание — кнопка в меню автоматически стала активной.</p>
+</section>
+
+<section id="cashbox" class="section">
+    <h2>📷 Касса</h2>
+    <p>Третья секция. Меню следит за вашим скроллом и плавно переключает активный пункт.</p>
+</section>
+
+<section id="profile" class="section">
+    <h2>👤 Профиль</h2>
+    <p>Последняя секция. Кликните по любой иконке в меню — страница плавно прокрутится туда.</p>
+</section>
+
+<!-- МЕНЮ -->
+<nav class="nav-menu">
+    <a href="#home" class="nav-item active" data-target="home">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3l-9 8h2v9h5v-6h4v6h5v-9h2z"/>
+        </svg>
+        <span class="label">Главная</span>
+    </a>
+
+    <a href="#pause" class="nav-item" data-target="pause">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="5" width="4" height="14" rx="1"/>
+            <rect x="14" y="5" width="4" height="14" rx="1"/>
+        </svg>
+        <span class="label">Пауза</span>
+    </a>
+
+    <a href="#cashbox" class="nav-item" data-target="cashbox">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 6h-3V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM9 4h6v2H9V4zm3 13a3 3 0 110-6 3 3 0 010 6z"/>
+        </svg>
+        <span class="label">Касса</span>
+    </a>
+
+    <a href="#profile" class="nav-item" data-target="profile">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 5a2 2 0 110 4 2 2 0 010-4zm-4 7a2 2 0 110 4 2 2 0 010-4zm8 0a2 2 0 110 4 2 2 0 010-4z"/>
+        </svg>
+        <span class="label">Профиль</span>
+    </a>
+</nav>
+
+<script>
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('.section');
+
+    // === 1. Подсветка активного пункта при скролле через IntersectionObserver ===
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                navItems.forEach(item => {
+                    item.classList.toggle('active', item.dataset.target === id);
+                });
+            }
+        });
+    }, {
+        // Срабатывает, когда секция занимает середину экрана
+        rootMargin: '-50% 0px -50% 0px',
+        threshold: 0
+    });
+
+    sections.forEach(section => observer.observe(section));
+
+    // === 2. Плавный скролл при клике (на случай старых браузеров) ===
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.getElementById(item.dataset.target);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

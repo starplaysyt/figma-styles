@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* === ФОНОВОЕ СВЕЧЕНИЕ === */
+        body::before,
+        body::after {
+            content: "";
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body::before {
+            background: #8a2be2;
+            top: -200px;
+            left: -200px;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        body::after {
+            background: #4a00b4;
+            bottom: -200px;
+            right: -200px;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
+        }
+
+        /* === КАРТОЧКА ФОРМЫ === */
+        .login-card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.95) 0%, rgba(5, 5, 5, 0.95) 100%);
+            border: 1px solid #2a2a2a;
+            border-radius: 28px;
+            padding: 45px 40px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        /* === ЛОГО === */
+        .logo {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #8a2be2, #6a0dad);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.5);
+        }
+
+        .logo svg {
+            width: 36px;
+            height: 36px;
+            color: #fff;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* === ВКЛАДКИ (Вход / Регистрация) === */
+        .tabs {
+            display: flex;
+            background: #131313;
+            border: 1px solid #232323;
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #8a2be2, #6a0dad);
+            color: #fff;
+            box-shadow: 0 3px 12px rgba(138, 43, 226, 0.4);
+        }
+
+        /* === ПОЛЯ ВВОДА === */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #d4b3ff;
+            font-weight: 500;
+            margin-bottom: 8px;
+            margin-left: 4px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper > svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: #555;
+            transition: color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            background: #131313;
+            border: 1px solid #232323;
+            border-radius: 14px;
+            padding: 14px 16px 14px 46px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: #8a2be2;
+            background: #161616;
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.15);
+        }
+
+        .input-wrapper:focus-within > svg {
+            color: #8a2be2;
+        }
+
+        .form-input::placeholder {
+            color: #444;
+        }
+
+        /* === КНОПКА ПОКАЗАТЬ/СКРЫТЬ ПАРОЛЬ === */
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #555;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-password:hover {
+            color: #d4b3ff;
+        }
+
+        .toggle-password svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* === СТРОКА: ЗАПОМНИТЬ + ЗАБЫЛИ ПАРОЛЬ === */
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            margin-top: -2px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .remember input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .remember .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 1.5px solid #333;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .remember input:checked + .checkbox {
+            background: linear-gradient(135deg, #8a2be2, #6a0dad);
+            border-color: #8a2be2;
+        }
+
+        .remember input:checked + .checkbox::after {
+            content: "✓";
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .remember-text {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .forgot {
+            font-size: 13px;
+            color: #d4b3ff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot:hover {
+            color: #fff;
+        }
+
+        /* === КНОПКА ВХОДА === */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #8a2be2, #6a0dad);
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.3);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(138, 43, 226, 0.5);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* === РАЗДЕЛИТЕЛЬ === */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0;
+            color: #555;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #2a2a2a;
+        }
+
+        /* === СОЦ. КНОПКИ === */
+        .social-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            background: #131313;
+            border: 1px solid #232323;
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .social-btn:hover {
+            border-color: #8a2be2;
+            background: #1a1a1a;
+            transform: translateY(-2px);
+        }
+
+        .social-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* === ССЫЛКА ВНИЗУ === */
+        .signup-link {
+            text-align: center;
+            margin-top: 24px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: #d4b3ff;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .signup-link a:hover {
+            color: #fff;
+        }
+
+        /* === ОШИБКА === */
+        .error-message {
+            display: none;
+            background: rgba(255, 77, 109, 0.1);
+            border: 1px solid rgba(255, 77, 109, 0.3);
+            color: #ff4d6d;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message.active {
+            display: flex;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* === АНИМАЦИЯ ПОЯВЛЕНИЯ === */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === АДАПТИВ === */
+        @media (max-width: 480px) {
+            .login-card { padding: 35px 25px; }
+            .title { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+
+    <!-- ЛОГО -->
+    <div class="logo">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+    </div>
+
+    <h1 class="title">С возвращением!</h1>
+    <p class="subtitle">Войдите в свой аккаунт</p>
+
+    <!-- ВКЛАДКИ -->
+    <div class="tabs">
+        <button class="tab active" data-tab="login">Вход</button>
+        <button class="tab" data-tab="register">Регистрация</button>
+    </div>
+
+    <!-- ОШИБКА -->
+    <div class="error-message" id="errorMsg">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <span>Неверный email или пароль</span>
+    </div>
+
+    <!-- ФОРМА -->
+    <form id="loginForm">
+
+        <!-- EMAIL -->
+        <div class="form-group">
+            <label>Email или логин</label>
+            <div class="input-wrapper">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+                <input type="text" class="form-input" placeholder="example@mail.com" required>
+            </div>
+        </div>
+
+        <!-- ПАРОЛЬ -->
+        <div class="form-group">
+            <label>Пароль</label>
+            <div class="input-wrapper">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9a2 2 0 110-4 2 2 0 010 4zm3.1-9H8.9V6a3.1 3.1 0 016.2 0v2z"/>
+                </svg>
+                <input type="password" class="form-input" id="passwordInput" placeholder="••••••••" required>
+                <button type="button" class="toggle-password" id="togglePassword" aria-label="Показать пароль">
+                    <svg id="eyeIcon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- ЗАПОМНИТЬ + ЗАБЫЛИ -->
+        <div class="form-row">
+            <label class="remember">
+                <input type="checkbox">
+                <span class="checkbox"></span>
+                <span class="remember-text">Запомнить меня</span>
+            </label>
+            <a href="#" class="forgot">Забыли пароль?</a>
+        </div>
+
+        <!-- КНОПКА -->
+        <button type="submit" class="btn-submit">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/>
+            </svg>
+            Войти
+        </button>
+
+        <!-- РАЗДЕЛИТЕЛЬ -->
+        <div class="divider">или</div>
+
+        <!-- СОЦ. КНОПКИ -->
+        <div class="social-buttons">
+            <button type="button" class="social-btn" title="Войти через Google">
+                <svg viewBox="0 0 24 24">
+                    <path fill="#EA4335" d="M12 5c1.6 0 3.1.6 4.2 1.6l3.2-3.2C17.5 1.6 14.9.5 12 .5 7.4.5 3.4 3.1 1.4 7l3.7 2.9C6.1 7 8.8 5 12 5z"/>
+                    <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.7-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+                    <path fill="#FBBC05" d="M5.1 14.1c-.2-.7-.4-1.4-.4-2.1s.1-1.4.4-2.1L1.4 7C.5 8.5 0 10.2 0 12s.5 3.5 1.4 5l3.7-2.9z"/>
+                    <path fill="#34A853" d="M12 23.5c3.2 0 5.9-1.1 7.9-2.9l-3.7-2.9c-1 .7-2.4 1.2-4.2 1.2-3.2 0-5.9-2-6.9-4.9l-3.7 2.9c2 3.9 6 6.6 10.6 6.6z"/>
+                </svg>
+                Google
+            </button>
+            <button type="button" class="social-btn" title="Войти через GitHub">
+                <svg viewBox="0 0 24 24" fill="#fff">
+                    <path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.7-1.3-1.7-1.1-.8.1-.7.1-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.4-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.8 1.2.8 2.4v3.5c0 .3.2.7.8.6A12 12 0 0012 .3"/>
+                </svg>
+                GitHub
+            </button>
+            <button type="button" class="social-btn" title="Войти через VK">
+                <svg viewBox="0 0 24 24" fill="#0077FF">
+                    <path d="M12.8 17.3h1.4s.4 0 .6-.3c.2-.2.2-.6.2-.6s0-1.6.7-1.8c.7-.2 1.7 1.6 2.7 2.3.7.5 1.3.4 1.3.4l2.6-.1s1.4-.1.7-1.2c-.1-.1-.4-.8-2-2.2-1.6-1.5-1.4-1.3.5-3.9 1.2-1.5 1.7-2.5 1.5-2.9-.1-.4-1-.3-1-.3h-3s-.2 0-.4.1c-.2.1-.3.4-.3.4s-.5 1.3-1.2 2.4c-1.4 2.3-2 2.5-2.2 2.3-.5-.3-.4-1.3-.4-2 0-2.2.4-3.1-.6-3.4-.4-.1-.6-.1-1.4-.2-1 0-1.9 0-2.4.3-.3.2-.6.5-.4.5.2 0 .6.1.8.4.3.4.3 1.3.3 1.3s.2 2.7-.4 3c-.4.2-1.1-.2-2.4-2.4-.7-1.1-1.2-2.4-1.2-2.4l-.3-.4s-.1-.2-.3-.2l-2.8.1s-.4 0-.6.2c-.1.2 0 .6 0 .6s2.2 5.2 4.7 7.8c2.3 2.4 4.9 2.2 4.9 2.2z"/>
+                </svg>
+                VK
+            </button>
+        </div>
+
+        <!-- ССЫЛКА -->
+        <div class="signup-link">
+            Нет аккаунта?<a href="#" id="goRegister">Зарегистрироваться</a>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    // === Переключение вкладок ===
+    const tabs = document.querySelectorAll('.tab');
+    const title = document.querySelector('.title');
+    const subtitle = document.querySelector('.subtitle');
+    const submitBtn = document.querySelector('.btn-submit');
+    const signupLink = document.querySelector('.signup-link');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            if (tab.dataset.tab === 'register') {
+                title.textContent = 'Создать аккаунт';
+                subtitle.textContent = 'Зарегистрируйтесь, чтобы начать';
+                submitBtn.querySelector('svg + *') ? null : null;
+                submitBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M15 12a4 4 0 100-8 4 4 0 000 8zm-9 8c0-2.7 6-4 9-4s9 1.3 9 4v2H6v-2z"/>
+          </svg>
+          Зарегистрироваться
+        `;
+                signupLink.innerHTML = 'Уже есть аккаунт?<a href="#" id="goLogin">Войти</a>';
+            } else {
+                title.textContent = 'С возвращением!';
+                subtitle.textContent = 'Войдите в свой аккаунт';
+                submitBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/>
+          </svg>
+          Войти
+        `;
+                signupLink.innerHTML = 'Нет аккаунта?<a href="#" id="goRegister">Зарегистрироваться</a>';
+            }
+            bindSignupLink();
+        });
+    });
+
+    // === Переключение по ссылке внизу ===
+    function bindSignupLink() {
+        const link = document.querySelector('.signup-link a');
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isRegister = link.id === 'goRegister';
+            document.querySelector(`.tab[data-tab="${isRegister ? 'register' : 'login'}"]`).click();
+        });
+    }
+    bindSignupLink();
+
+    // === Показать/скрыть пароль ===
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('passwordInput');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    togglePassword.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        eyeIcon.innerHTML = isPassword
+            ? '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46A11.8 11.8 0 001 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27z"/>'
+            : '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/>';
+    });
+
+    // === Отправка формы ===
+    const form = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // Имитация неуспешного входа
+        // В реальности здесь будет fetch к API
+        const email = form.querySelector('input[type="text"]').value;
+        const password = passwordInput.value;
+
+        if (email === 'admin@test.com' && password === '12345') {
+            alert('Успешный вход!');
+            errorMsg.classList.remove('active');
+        } else {
+            errorMsg.classList.add('active');
+            // Скрыть ошибку через 3 секунды
+            setTimeout(() => errorMsg.classList.remove('active'), 3000);
+        }
+    });
+</script>
+
+</body>
+</html>

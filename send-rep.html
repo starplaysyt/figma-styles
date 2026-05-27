@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Отправить заявку</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #000;
+            color: #fff;
+            padding: 60px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        /* === ФОРМА === */
+        .form-card {
+            background: linear-gradient(135deg, #0e0e0e 0%, #050505 100%);
+            border: 1px solid #1f1f1f;
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            color: #d4b3ff;
+            font-weight: 500;
+            margin-left: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group label .required {
+            color: #ff4d6d;
+        }
+
+        /* === ПОЛЯ ВВОДА === */
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: #555;
+            transition: color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            background: #131313;
+            border: 1px solid #232323;
+            border-radius: 14px;
+            padding: 14px 16px 14px 46px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-textarea {
+            padding-left: 16px;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-select {
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 18px;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: #8a2be2;
+            background: #161616;
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.15);
+        }
+
+        .form-input:focus ~ svg,
+        .input-wrapper:focus-within svg {
+            color: #8a2be2;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: #444;
+        }
+
+        /* === ЧЕКБОКС-ГРУППА (типы услуг) === */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .checkbox-pill {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .checkbox-pill input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .checkbox-pill span {
+            display: inline-block;
+            padding: 9px 18px;
+            background: #131313;
+            border: 1px solid #232323;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #aaa;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .checkbox-pill:hover span {
+            border-color: #444;
+            color: #fff;
+        }
+
+        .checkbox-pill input:checked + span {
+            background: linear-gradient(135deg, #8a2be2, #6a0dad);
+            border-color: #8a2be2;
+            color: #fff;
+            box-shadow: 0 3px 12px rgba(138, 43, 226, 0.4);
+        }
+
+        /* === СОГЛАСИЕ === */
+        .agreement {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .agreement input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .agreement .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid #333;
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-top: 1px;
+        }
+
+        .agreement input:checked + .checkbox {
+            background: linear-gradient(135deg, #8a2be2, #6a0dad);
+            border-color: #8a2be2;
+        }
+
+        .agreement input:checked + .checkbox::after {
+            content: "✓";
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .agreement-text {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        .agreement-text a {
+            color: #d4b3ff;
+            text-decoration: none;
+            border-bottom: 1px dashed #d4b3ff;
+        }
+
+        .agreement-text a:hover {
+            color: #fff;
+        }
+
+        /* === КНОПКА ОТПРАВКИ === */
+        .btn-submit {
+            width: 100%;
+            margin-top: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, #8a2be2, #6a0dad);
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.3);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(138, 43, 226, 0.5);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-submit svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* === УСПЕХ === */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .success-message .icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #8a2be2, #6a0dad);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(138, 43, 226, 0.5);
+            animation: scaleIn 0.5s ease;
+        }
+
+        .success-message .icon svg {
+            width: 40px;
+            height: 40px;
+            color: #fff;
+        }
+
+        .success-message h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            color: #888;
+            margin-bottom: 24px;
+        }
+
+        .success-message button {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .success-message button:hover {
+            border-color: #8a2be2;
+        }
+
+        /* === АНИМАЦИИ === */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        /* === АДАПТИВ === */
+        @media (max-width: 600px) {
+            .title { font-size: 32px; }
+            .form-card { padding: 25px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="title">Отправить заявку</h1>
+    <p class="subtitle">Заполните форму и мы свяжемся с вами в течение 15 минут</p>
+
+    <div class="form-card">
+
+        <!-- ФОРМА -->
+        <form id="applicationForm">
+
+            <div class="form-grid">
+
+                <!-- ИМЯ -->
+                <div class="form-group">
+                    <label>Имя <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        <input type="text" class="form-input" placeholder="Ваше имя" required>
+                    </div>
+                </div>
+
+                <!-- ТЕЛЕФОН -->
+                <div class="form-group">
+                    <label>Телефон <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1 1 0 00-1.02.24l-2.2 2.2a15.07 15.07 0 01-6.59-6.59l2.2-2.21a.96.96 0 00.25-1A11.36 11.36 0 018.5 4a1 1 0 00-1-1H4a1 1 0 00-1 1 17 17 0 0017 17 1 1 0 001-1v-3.5a1 1 0 00-1-1z"/>
+                        </svg>
+                        <input type="tel" class="form-input" placeholder="+375 (29) 000-00-00" required>
+                    </div>
+                </div>
+
+                <!-- EMAIL -->
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <div class="input-wrapper">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        <input type="email" class="form-input" placeholder="example@mail.com">
+                    </div>
+                </div>
+
+                <!-- КОМПАНИЯ -->
+                <div class="form-group">
+                    <label>Компания</label>
+                    <div class="input-wrapper">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
+                        </svg>
+                        <input type="text" class="form-input" placeholder="Название компании">
+                    </div>
+                </div>
+
+                <!-- МАРШРУТ -->
+                <div class="form-group">
+                    <label>Маршрут <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
+                        </svg>
+                        <select class="form-select" required>
+                            <option value="">— Выберите —</option>
+                            <option>РФ → РБ</option>
+                            <option>РБ → РФ</option>
+                            <option>Внутри РБ</option>
+                            <option>Другое</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ОБЪЁМ -->
+                <div class="form-group">
+                    <label>Объём груза (м³)</label>
+                    <div class="input-wrapper">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18-.21 0-.41-.06-.57-.18l-7.9-4.44A.991.991 0 013 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18.21 0 .41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9z"/>
+                        </svg>
+                        <input type="number" class="form-input" placeholder="Например, 10" min="1">
+                    </div>
+                </div>
+
+                <!-- ТИП УСЛУГ -->
+                <div class="form-group full">
+                    <label>Тип услуг</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-pill">
+                            <input type="checkbox">
+                            <span>📦 Доставка</span>
+                        </label>
+                        <label class="checkbox-pill">
+                            <input type="checkbox">
+                            <span>🛃 Растаможка</span>
+                        </label>
+                        <label class="checkbox-pill">
+                            <input type="checkbox">
+                            <span>📄 Документы</span>
+                        </label>
+                        <label class="checkbox-pill">
+                            <input type="checkbox">
+                            <span>🚚 Грузоперевозки</span>
+                        </label>
+                        <label class="checkbox-pill">
+                            <input type="checkbox">
+                            <span>🏬 Складирование</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- СООБЩЕНИЕ -->
+                <div class="form-group full">
+                    <label>Сообщение</label>
+                    <textarea class="form-textarea" placeholder="Опишите задачу или вопрос..."></textarea>
+                </div>
+
+            </div>
+
+            <!-- СОГЛАСИЕ -->
+            <label class="agreement">
+                <input type="checkbox" id="agreementCheck" required>
+                <span class="checkbox"></span>
+                <span class="agreement-text">
+          Я согласен с <a href="#">политикой конфиденциальности</a> и обработкой персональных данных
+        </span>
+            </label>
+
+            <!-- КНОПКА -->
+            <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+                Отправить заявку
+            </button>
+
+        </form>
+
+        <!-- УСПЕХ -->
+        <div class="success-message" id="successMessage">
+            <div class="icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+            </div>
+            <h3>Заявка отправлена!</h3>
+            <p>Мы свяжемся с вами в ближайшее время</p>
+            <button id="resetBtn">Отправить ещё одну</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('applicationForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const agreementCheck = document.getElementById('agreementCheck');
+    const successMessage = document.getElementById('successMessage');
+    const resetBtn = document.getElementById('resetBtn');
+
+    // Активация кнопки только при согласии с политикой
+    agreementCheck.addEventListener('change', () => {
+        submitBtn.disabled = !agreementCheck.checked;
+    });
+
+    // Отправка формы
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Здесь можно отправить данные на сервер через fetch
+        // fetch('/api/application', { method: 'POST', body: new FormData(form) })
+
+        form.style.display = 'none';
+        successMessage.classList.add('active');
+    });
+
+    // Сброс — показать форму снова
+    resetBtn.addEventListener('click', () => {
+        form.reset();
+        form.style.display = 'block';
+        successMessage.classList.remove('active');
+        submitBtn.disabled = true;
+    });
+
+    // === Маска для телефона (простая) ===
+    const phoneInput = form.querySelector('input[type="tel"]');
+    phoneInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.startsWith('375')) value = value.slice(3);
+        let formatted = '+375';
+        if (value.length > 0) formatted += ' (' + value.slice(0, 2);
+        if (value.length >= 2) formatted += ') ' + value.slice(2, 5);
+        if (value.length >= 5) formatted += '-' + value.slice(5, 7);
+        if (value.length >= 7) formatted += '-' + value.slice(7, 9);
+        e.target.value = formatted;
+    });
+</script>
+
+</body>
+</html>

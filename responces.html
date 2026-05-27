@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Отзывы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #000;
+            color: #fff;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            color: #fff;
+        }
+
+        /* === СПИСОК ОТЗЫВОВ === */
+        .reviews {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* === КАРТОЧКА ОТЗЫВА === */
+        .review {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            padding: 18px 26px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #050505 100%);
+            border: 1px solid #1f1f1f;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            animation: fadeInUp 0.5s ease backwards;
+        }
+
+        .review:nth-child(1) { animation-delay: 0.05s; }
+        .review:nth-child(2) { animation-delay: 0.15s; }
+        .review:nth-child(3) { animation-delay: 0.25s; }
+        .review:nth-child(4) { animation-delay: 0.35s; }
+        .review:nth-child(5) { animation-delay: 0.45s; }
+
+        .review:hover {
+            border-color: #1e90ff;
+            transform: translateX(5px);
+            box-shadow: 0 5px 25px rgba(30, 144, 255, 0.15);
+        }
+
+        .review-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #0d2847, #061a33);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .review-logo svg {
+            width: 36px;
+            height: 36px;
+            color: #1e90ff;
+        }
+
+        .review-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .review-company {
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .review-text {
+            font-size: 14px;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        /* === КНОПКА "ДОБАВИТЬ ОТЗЫВ" === */
+        .add-review {
+            display: block;
+            margin: 40px auto 0;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #1e90ff, #0066cc);
+            border: none;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(30, 144, 255, 0.3);
+            font-family: inherit;
+        }
+
+        .add-review:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(30, 144, 255, 0.5);
+        }
+
+        /* === МОДАЛЬНОЕ ОКНО === */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal {
+            background: linear-gradient(135deg, #0e0e0e 0%, #050505 100%);
+            border: 1px solid #2a2a2a;
+            border-radius: 24px;
+            padding: 35px;
+            max-width: 500px;
+            width: 100%;
+            animation: slideUp 0.4s ease;
+        }
+
+        .modal h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .modal-form input,
+        .modal-form textarea {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .modal-form input:focus,
+        .modal-form textarea:focus {
+            border-color: #1e90ff;
+        }
+
+        .modal-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #1e90ff, #0066cc);
+            color: #fff;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            background: #1a1a1a;
+            color: #aaa;
+            border: 1px solid #2a2a2a;
+        }
+
+        .btn-cancel:hover {
+            background: #252525;
+            color: #fff;
+        }
+
+        /* === АНИМАЦИИ === */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === АДАПТИВ === */
+        @media (max-width: 600px) {
+            .title { font-size: 36px; }
+            .review {
+                padding: 16px 18px;
+                border-radius: 24px;
+                gap: 14px;
+            }
+            .review-logo {
+                width: 50px;
+                height: 50px;
+            }
+            .review-company { font-size: 15px; }
+            .review-text { font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="title">Отзывы</h1>
+
+    <div class="reviews" id="reviewsList">
+
+        <div class="review">
+            <div class="review-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 22h20L12 2zm0 5l6.5 13H8l4-8 1.5 3H15l-3-6z"/>
+                </svg>
+            </div>
+            <div class="review-body">
+                <div class="review-company">ООО "Потужнострой"</div>
+                <div class="review-text">Прекрасная компания, потужнолеты доставили вовремя, дешевле конкурентов</div>
+            </div>
+        </div>
+
+        <div class="review">
+            <div class="review-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 22h20L12 2zm0 5l6.5 13H8l4-8 1.5 3H15l-3-6z"/>
+                </svg>
+            </div>
+            <div class="review-body">
+                <div class="review-company">ОАО "Гребля без границ"</div>
+                <div class="review-text">Замечательная компания, байдарки доставили вовремя, быстрее конкурентов</div>
+            </div>
+        </div>
+
+        <div class="review">
+            <div class="review-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 22h20L12 2zm0 5l6.5 13H8l4-8 1.5 3H15l-3-6z"/>
+                </svg>
+            </div>
+            <div class="review-body">
+                <div class="review-company">ООО "Потужнострой"</div>
+                <div class="review-text">Прекрасная компания, потужнолеты доставили вовремя, дешевле конкурентов</div>
+            </div>
+        </div>
+
+        <div class="review">
+            <div class="review-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 22h20L12 2zm0 5l6.5 13H8l4-8 1.5 3H15l-3-6z"/>
+                </svg>
+            </div>
+            <div class="review-body">
+                <div class="review-company">ООО "Потужнострой"</div>
+                <div class="review-text">Прекрасная компания, потужнолеты доставили вовремя, дешевле конкурентов</div>
+            </div>
+        </div>
+
+        <div class="review">
+            <div class="review-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 22h20L12 2zm0 5l6.5 13H8l4-8 1.5 3H15l-3-6z"/>
+                </svg>
+            </div>
+            <div class="review-body">
+                <div class="review-company">ООО "Потужнострой"</div>
+                <div class="review-text">Прекрасная компания, потужнолеты доставили вовремя, дешевле конкурентов</div>
+            </div>
+        </div>
+
+    </div>
+
+    <button class="add-review" id="addReviewBtn">+ Оставить отзыв</button>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО -->
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <h3>Оставить отзыв</h3>
+        <form class="modal-form" id="reviewForm">
+            <input type="text" id="companyName" placeholder="Название компании" required>
+            <textarea id="reviewText" placeholder="Ваш отзыв..." required></textarea>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" id="cancelBtn">Отмена</button>
+                <button type="submit" class="btn-submit">Опубликовать</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById('modal');
+    const addBtn = document.getElementById('addReviewBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const form = document.getElementById('reviewForm');
+    const reviewsList = document.getElementById('reviewsList');
+
+    // Открыть модалку
+    addBtn.addEventListener('click', () => {
+        modal.classList.add('active');
+    });
+
+    // Закрыть модалку
+    cancelBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    function closeModal() {
+        modal.classList.remove('active');
+        form.reset();
+    }
+
+    // Добавление нового отзыва
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const company = document.getElementById('companyName').value;
+        const text = document.getElementById('reviewText').value;
+
+        const newReview = document.createElement('div');
+        newReview.className = 'review';
+        newReview.innerHTML = `
+      <div class="review-logo">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L2 22h20L12 2zm0 5l6.5 13H8l4-8 1.5 3H15l-3-6z"/>
+        </svg>
+      </div>
+      <div class="review-body">
+        <div class="review-company">${escapeHtml(company)}</div>
+        <div class="review-text">${escapeHtml(text)}</div>
+      </div>
+    `;
+        reviewsList.appendChild(newReview);
+        closeModal();
+
+        // Плавный скролл к новому отзыву
+        newReview.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    // Защита от XSS
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+</script>
+
+</body>
+</html>

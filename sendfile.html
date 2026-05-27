@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Загрузка файла</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .upload-card {
+            width: 100%;
+            max-width: 460px;
+            background: #0a0a0a;
+            border: 1px solid #1f1f1f;
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        /* === ЗОНА ЗАГРУЗКИ === */
+        .dropzone {
+            border: 2px dashed #2a2a2a;
+            border-radius: 14px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .dropzone:hover,
+        .dropzone.dragover {
+            border-color: #8a2be2;
+            background: rgba(138, 43, 226, 0.05);
+        }
+
+        .dropzone svg {
+            width: 40px;
+            height: 40px;
+            color: #555;
+            margin-bottom: 12px;
+            transition: color 0.25s ease;
+        }
+
+        .dropzone:hover svg,
+        .dropzone.dragover svg {
+            color: #8a2be2;
+        }
+
+        .dropzone-text {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 4px;
+        }
+
+        .dropzone-hint {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .dropzone input {
+            display: none;
+        }
+
+        /* === СПИСОК ФАЙЛОВ === */
+        .file-list {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: #131313;
+            border: 1px solid #232323;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .file-item .name {
+            flex: 1;
+            color: #fff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-item .size {
+            color: #666;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .file-item .remove {
+            background: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s ease;
+        }
+
+        .file-item .remove:hover {
+            color: #ff4d6d;
+        }
+
+        .file-item .remove svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* === КНОПКА === */
+        .btn-submit {
+            width: 100%;
+            margin-top: 20px;
+            padding: 13px;
+            background: linear-gradient(135deg, #8a2be2, #6a0dad);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="upload-card">
+    <h2 class="title">Загрузка файла</h2>
+
+    <label class="dropzone" id="dropzone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <div class="dropzone-text">Перетащите файл или нажмите для выбора</div>
+        <div class="dropzone-hint">До 10 МБ</div>
+        <input type="file" id="fileInput" multiple>
+    </label>
+
+    <div class="file-list" id="fileList"></div>
+
+    <button class="btn-submit" id="submitBtn" disabled>Отправить</button>
+</div>
+
+<script>
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const fileList = document.getElementById('fileList');
+    const submitBtn = document.getElementById('submitBtn');
+
+    let files = [];
+
+    // Выбор файлов через input
+    fileInput.addEventListener('change', (e) => {
+        addFiles(e.target.files);
+    });
+
+    // Drag & drop
+    ['dragenter', 'dragover'].forEach(evt => {
+        dropzone.addEventListener(evt, (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(evt => {
+        dropzone.addEventListener(evt, (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+        });
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        addFiles(e.dataTransfer.files);
+    });
+
+    // Добавление файлов
+    function addFiles(newFiles) {
+        for (const file of newFiles) {
+            files.push(file);
+        }
+        renderFiles();
+    }
+
+    // Отрисовка списка
+    function renderFiles() {
+        fileList.innerHTML = '';
+        files.forEach((file, index) => {
+            const item = document.createElement('div');
+            item.className = 'file-item';
+            item.innerHTML = `
+        <span class="name">${file.name}</span>
+        <span class="size">${formatSize(file.size)}</span>
+        <button class="remove" data-index="${index}" aria-label="Удалить">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      `;
+            fileList.appendChild(item);
+        });
+
+        submitBtn.disabled = files.length === 0;
+    }
+
+    // Удаление
+    fileList.addEventListener('click', (e) => {
+        const btn = e.target.closest('.remove');
+        if (!btn) return;
+        files.splice(+btn.dataset.index, 1);
+        renderFiles();
+    });
+
+    // Размер в КБ/МБ
+    function formatSize(bytes) {
+        if (bytes < 1024) return bytes + ' Б';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' КБ';
+        return (bytes / 1024 / 1024).toFixed(1) + ' МБ';
+    }
+
+    // Отправка
+    submitBtn.addEventListener('click', () => {
+        // Здесь FormData + fetch на сервер
+        // const fd = new FormData();
+        // files.forEach(f => fd.append('files', f));
+        // fetch('/upload', { method: 'POST', body: fd });
+
+        alert(`Отправлено файлов: ${files.length}`);
+        files = [];
+        fileInput.value = '';
+        renderFiles();
+    });
+</script>
+
+</body>
+</html>
