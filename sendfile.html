@@ -163,7 +163,12 @@
 </head>
 <body>
 
-<div class="upload-card">
+<form id="uploadForm"
+      action="/Home/Upload"
+      method="post"
+      enctype="multipart/form-data"
+      class="upload-card">
+
     <h2 class="title">Загрузка файла</h2>
 
     <label class="dropzone" id="dropzone">
@@ -174,26 +179,19 @@
         </svg>
         <div class="dropzone-text">Перетащите файл или нажмите для выбора</div>
         <div class="dropzone-hint">До 10 МБ</div>
-        <input type="file" id="fileInput" multiple>
+        <input type="file" id="fileInput" name="files" multiple />
     </label>
 
     <div class="file-list" id="fileList"></div>
 
-    <button class="btn-submit" id="submitBtn" disabled>Отправить</button>
-</div>
+    <button type="submit" class="btn-submit" id="submitBtn" disabled>Отправить</button>
+</form>
 
 <script>
     const dropzone = document.getElementById('dropzone');
     const fileInput = document.getElementById('fileInput');
     const fileList = document.getElementById('fileList');
     const submitBtn = document.getElementById('submitBtn');
-
-    let files = [];
-
-    // Выбор файлов через input
-    fileInput.addEventListener('change', (e) => {
-        addFiles(e.target.files);
-    });
 
     // Drag & drop
     ['dragenter', 'dragover'].forEach(evt => {
@@ -211,27 +209,26 @@
     });
 
     dropzone.addEventListener('drop', (e) => {
-        addFiles(e.dataTransfer.files);
+        // Передаём файлы из drop в input — чтобы они отправились с формой
+        fileInput.files = e.dataTransfer.files;
+        renderFiles();
     });
 
-    // Добавление файлов
-    function addFiles(newFiles) {
-        for (const file of newFiles) {
-            files.push(file);
-        }
-        renderFiles();
-    }
+    // Изменение input
+    fileInput.addEventListener('change', renderFiles);
 
     // Отрисовка списка
     function renderFiles() {
         fileList.innerHTML = '';
+        const files = Array.from(fileInput.files);
+
         files.forEach((file, index) => {
             const item = document.createElement('div');
             item.className = 'file-item';
             item.innerHTML = `
         <span class="name">${file.name}</span>
         <span class="size">${formatSize(file.size)}</span>
-        <button class="remove" data-index="${index}" aria-label="Удалить">
+        <button type="button" class="remove" data-index="${index}" aria-label="Удалить">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"/>
             <line x1="6" y1="6" x2="18" y2="18"/>
@@ -244,33 +241,25 @@
         submitBtn.disabled = files.length === 0;
     }
 
-    // Удаление
+    // Удаление файла (через пересоздание FileList)
     fileList.addEventListener('click', (e) => {
         const btn = e.target.closest('.remove');
         if (!btn) return;
-        files.splice(+btn.dataset.index, 1);
+
+        const index = +btn.dataset.index;
+        const dt = new DataTransfer();
+        Array.from(fileInput.files).forEach((file, i) => {
+            if (i !== index) dt.items.add(file);
+        });
+        fileInput.files = dt.files;
         renderFiles();
     });
 
-    // Размер в КБ/МБ
     function formatSize(bytes) {
         if (bytes < 1024) return bytes + ' Б';
         if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' КБ';
         return (bytes / 1024 / 1024).toFixed(1) + ' МБ';
     }
-
-    // Отправка
-    submitBtn.addEventListener('click', () => {
-        // Здесь FormData + fetch на сервер
-        // const fd = new FormData();
-        // files.forEach(f => fd.append('files', f));
-        // fetch('/upload', { method: 'POST', body: fd });
-
-        alert(`Отправлено файлов: ${files.length}`);
-        files = [];
-        fileInput.value = '';
-        renderFiles();
-    });
 </script>
 
 </body>
